@@ -1,8 +1,0 @@
-[build]
-  publish = "public"
-  command = "npm install && npx prisma generate && npm run build"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
