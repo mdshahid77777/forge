@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FORGE — Personal Life Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="auth" class="auth-shell">
+  <div class="auth-brand"><span class="brand-mark">F</span><div><b>FORGE</b><small>PERSONAL LIFE OPERATING SYSTEM</small></div></div>
+  <div class="auth-card">
+    <div class="auth-copy"><span class="eyebrow">YOUR SYSTEM. YOUR DATA.</span><h1 id="authTitle">Enter your workspace.</h1><p id="authSub">Create an account or sign in. Every record is isolated to your account.</p></div>
+    <form id="authForm">
+      <label id="nameWrap">Name<input id="name" autocomplete="name"></label>
+      <label>Email<input id="email" type="email" required autocomplete="email"></label>
+      <label>Password<input id="password" type="password" required minlength="8" autocomplete="current-password"></label>
+      <button class="primary" type="submit" id="authSubmit">Create account</button>
+    </form>
+    <button class="linkbtn" id="authSwitch">Already have an account? Sign in</button>
+    <div id="authError" class="error"></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-head"><span class="brand-mark">F</span><div><b>FORGE</b><small>BUILD YOURSELF</small></div></div>
+    <nav id="nav"></nav>
+    <div class="side-bottom"><button id="logout" class="ghost">Log out</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button id="mobileMenu" class="iconbtn">☰</button><div><span id="crumb" class="eyebrow">COMMAND CENTER</span><h2 id="pageTitle">Today</h2></div><div class="top-actions"><span id="userName" class="user-pill"></span><button class="iconbtn" data-go="settings">⚙</button></div></header>
+    <section id="content"></section>
+  </main>
+</div>
+
+<div id="toast"></div>
+<script src="/config.js"></script>
+<script src="/app.js"></script>
+</body></html>

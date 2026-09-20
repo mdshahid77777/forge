@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  settings    UserSettings?
+  metrics     Metric[]
+  tasks       Task[]
+  exercises   Exercise[]
+  workouts    WorkoutLog[]
+  meals       Meal[]
+  focus       FocusSession[]
+  study       StudyLog[]
+  placements  Placement[]
+  prayers     PrayerLog[]
+  wellness    WellnessEntry[]
+  conversations CoachMessage[]
+}
+
+model UserSettings {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  theme          String   @default("dark")
+  accent         String   @default("#e5ff4f")
+  density        String   @default("comfortable")
+  units          String   @default("metric")
+  nav            String   @default("today,fitness,nutrition,study,focus,placement,salah,wellness,analytics,coach")
+  prayerCity     String?
+  prayerLat      Float?
+  prayerLon      Float?
+  calorieTarget  Int?
+  proteinTarget  Int?
+  waterTarget    Int?
+  stepTarget     Int?
+  weightGoal     Float?
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Metric {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String
+  weight    Float?
+  calories  Int?
+  protein   Int?
+  water     Int?
+  steps     Int?
+  sleep     Float?
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  section     String   @default("personal")
+  bucket      String   @default("anytime")
+  recurrence  String   @default("one-time")
+  dueDate     String?
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, dueDate])
+}
+
+model Exercise {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  muscle    String?
+  equipment String?
+  createdAt DateTime @default(now())
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs      WorkoutLog[]
+}
+
+model WorkoutLog {
+  id         String   @id @default(cuid())
+  userId     String
+  exerciseId String
+  date       String
+  setNo      Int
+  reps       Int
+  weight     Float
+  completed  Boolean  @default(false)
+  user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  @@index([userId, date])
+}
+
+model Meal {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String
+  mealType  String
+  name      String
+  calories  Int?
+  protein   Int?
+  carbs     Int?
+  fats      Int?
+  completed Boolean @default(false)
+  createdAt DateTime @default(now())
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, date])
+}
+
+model FocusSession {
+  id         String   @id @default(cuid())
+  userId     String
+  startedAt  DateTime
+  duration   Int
+  mode       String
+  subject    String?
+  completed  Boolean @default(false)
+  user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, startedAt])
+}
+
+model StudyLog {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String
+  subject   String
+  minutes   Int
+  solved    Int @default(0)
+  failed    Int @default(0)
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, date])
+}
+
+model Placement {
+  id          String   @id @default(cuid())
+  userId      String
+  company     String
+  role        String?
+  stage       String   @default("Applied")
+  ctc         String?
+  deadline    String?
+  interviewAt String?
+  link        String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, stage])
+}
+
+model PrayerLog {
+  id       String @id @default(cuid())
+  userId   String
+  date     String
+  prayer   String
+  done     Boolean @default(false)
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, date, prayer])
+}
+
+model WellnessEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String
+  type      String
+  title     String
+  note      String?
+  photoData String?
+  createdAt DateTime @default(now())
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, date])
+}
+
+model CoachMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
+}
