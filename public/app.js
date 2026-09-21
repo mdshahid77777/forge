@@ -23,9 +23,20 @@ const api=async(url,opt={})=>{
 };
 const toast=m=>{let t=$("#toast");t.className="toast";t.textContent=m;clearTimeout(window._toast);window._toast=setTimeout(()=>t.className="",2600)};
 function renderNav(){ $("#nav").innerHTML=sections.filter(x=>(settings?.nav||sections.map(x=>x[0]).join(",")).split(",").includes(x[0])).map(x=>`<button class="navbtn ${current===x[0]?"active":""}" data-go="${x[0]}"><span>${x[2]}</span>${x[1]}</button>`).join(""); $$(".navbtn").forEach(b=>b.onclick=()=>go(b.dataset.go));}
-function go(s){current=s;renderNav();$("#crumb").textContent=s==="today"?"COMMAND CENTER":s.toUpperCase();$("#pageTitle").textContent=sections.find(x=>x[0]===s)?.[1]||s;$("#content").innerHTML="";renderSection(s);$("#sidebar")?.classList.remove("open");}
+function setSidebarOpen(open){
+  const sidebar=$(".sidebar");
+  const backdrop=$("#mobileBackdrop");
+  if(!sidebar||!backdrop) return;
+  sidebar.classList.toggle("open", open);
+  backdrop.classList.toggle("visible", open);
+  document.body.classList.toggle("sidebar-open", open);
+}
+function closeSidebar(){ if (window.innerWidth <= 768) setSidebarOpen(false); }
+function go(s){current=s;renderNav();$("#crumb").textContent=s==="today"?"COMMAND CENTER":s.toUpperCase();$("#pageTitle").textContent=sections.find(x=>x[0]===s)?.[1]||s;$("#content").innerHTML="";renderSection(s);closeSidebar();}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b&&b.closest(".top-actions"))go(b.dataset.go)});
-$("#mobileMenu").onclick=()=>$(".sidebar").classList.toggle("open");
+$("#mobileMenu").onclick=()=>setSidebarOpen($(".sidebar").classList.contains("open") ? false : true);
+$("#mobileBackdrop").onclick=()=>setSidebarOpen(false);
+window.addEventListener("resize",()=>{if(window.innerWidth>768)setSidebarOpen(false);});
 
 function empty(text){return `<div class="empty">${text}</div>`}
 function metricCard(label,key,val,sub=""){return `<div class="metric"><div class="label">${label}</div><div class="value">${val??"—"}</div><div class="sub">${sub}</div></div>`}
