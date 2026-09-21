@@ -4,7 +4,9 @@ const sections=[
   ["today","Today","⌂"],["fitness","Fitness","↗"],["nutrition","Nutrition","◒"],["study","Study","▣"],["focus","Focus","◷"],
   ["placement","Placement","◆"],["salah","Salah","☾"],["wellness","Wellness","✦"],["analytics","Analytics","⌁"],["coach","Coach Forge","✎"],["settings","Settings","⚙"]
 ];
-const API_BASE_URL = (window.FORGE_API_URL || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? window.location.origin : "")).replace(/\/$/, "");
+const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const configuredApiUrl = window.FORGE_API_URL && !/localhost|127\.0\.0\.1|::1/i.test(String(window.FORGE_API_URL)) ? window.FORGE_API_URL : "";
+const API_BASE_URL = (isLocalhost ? (configuredApiUrl || window.location.origin) : "").replace(/\/$/, "");
 const resolveApiUrl = (url) => {
   if (!url) return url;
   if (/^https?:\/\//i.test(url)) return url;
